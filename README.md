@@ -1,6 +1,6 @@
-# Disclose.js
+# Disclose DSL
 
-Disclose.js is an experimental animation, transformation, and timing DSL for composing scenes and shapes with a Swift-like fluent API. It targets canvas rendering but keeps the core DSL portable and testable.
+Disclose DSL is an experimental animation, transformation, and timing DSL for composing scenes and shapes with a Swift-like fluent API. It targets canvas rendering but keeps the core DSL portable and testable.
 
 ## Status
 
@@ -12,7 +12,7 @@ Work in progress. The public API is unstable and may change without notice. Docu
 npm install disclose-dsl
 ```
 
-## Quick Start
+## Quick Start (Module)
 
 ```ts
 import { Scene, Circle, Rect, Renderer, Timeline } from 'disclose-dsl';
@@ -29,16 +29,63 @@ const scene = Scene({ duration: 4000 }, (t) => [
     .rotate({ from: 0, to: Math.PI / 8, duration: 1200 }),
 ]);
 
-const canvas = document.querySelector('canvas')!;
+const canvas = document.querySelector('#stage');
+if (!canvas) throw new Error('Canvas not found');
+
 const renderer = new Renderer(canvas, scene);
 const timeline = new Timeline();
 
-type FrameCallback = (time: number) => void;
-const tick: FrameCallback = () => {
+const tick = () => {
   renderer.render(timeline.now());
   requestAnimationFrame(tick);
 };
 requestAnimationFrame(tick);
+```
+
+`requestAnimationFrame` is the browser's animation loop. We use it to redraw the scene every frame.
+
+## Quick Start (CDN + HTML)
+
+```html
+<canvas id="stage" style="width: 800px; height: 400px;"></canvas>
+<script type="module">
+  import {
+    Scene,
+    Circle,
+    Rect,
+    Renderer,
+    Timeline
+  } from 'https://unpkg.com/disclose-dsl@0.1.0/dist/index.js';
+
+  const scene = Scene({ duration: 4000 }, (t) => [
+    Circle(60)
+      .fill('#ff4d4f')
+      .move({ x: [-200, 200], duration: 2000, ease: 'easeInOut' })
+      .opacity({ from: 0, to: 1, duration: 800 }),
+
+    Rect(140, 90)
+      .fill('#2f54eb')
+      .scale({ from: 0.7, to: 1.1, duration: 1200, ease: 'easeOut' })
+      .rotate({ from: 0, to: Math.PI / 8, duration: 1200 }),
+  ]);
+
+  const canvas = document.querySelector('#stage');
+  const renderer = new Renderer(canvas, scene);
+  const timeline = new Timeline();
+
+  const tick = () => {
+    renderer.render(timeline.now());
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+</script>
+```
+
+## CDN
+
+```txt
+https://unpkg.com/disclose-dsl@0.1.0/dist/index.js
+https://cdn.jsdelivr.net/npm/disclose-dsl@0.1.0/dist/index.js
 ```
 
 ## Concepts
@@ -54,6 +101,17 @@ requestAnimationFrame(tick);
 ```bash
 npm test
 ```
+
+## Release (npm)
+
+Publishing is automated via GitHub Actions. Create a tag like `v0.1.1` and push it:
+
+```bash
+git tag v0.1.1
+git push --tags
+```
+
+The workflow in `.github/workflows/release.yml` will build, test, and publish to npm.
 
 ## Contributing
 
