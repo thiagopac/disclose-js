@@ -107,8 +107,6 @@ if (!canvas) throw new Error('Canvas not found');
 play(canvas, scene);
 ```
 
-`requestAnimationFrame` is the browser's animation loop. We use it to redraw the scene every frame.
-
 ## Quick Start (CDN + HTML)
 
 ```html
