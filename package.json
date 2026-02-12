@@ -1,6 +1,6 @@
 {
   "name": "disclose-dsl",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Animation + temporal DSL for scenes and shapes.",
   "license": "MIT",
   "author": "Thiago Pires Alves de Castro",
